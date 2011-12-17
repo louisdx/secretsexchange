@@ -1,0 +1,8 @@
+html, input { font-family: "DejaVu Sans Serif", "Trebuchet MS", Helvetica, sans-serif; }
+html { background-color: #F5F5F5; margin: 0; padding: 0; font-size: medium; }
+body { margin: 0; padding: 1em 2em; }
+input[type=text] { padding: .5ex; font-size: medium; }
+input[type=button] { padding: .5ex 1ex; font-size: small; font-weight: bold; }
+th, td { text-align: left; vertical-align: middle; padding: 1ex 0;}
+fieldset { margin: 0 0 1em 0; }
+sup, sub { line-height: 100%; }
