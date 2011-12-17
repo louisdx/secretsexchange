@@ -1,0 +1,16 @@
+Simple secret exchange
+======================
+
+This project consists of a website and an offline application
+(written in Qt) which perform a simple Diffie-Hellman secret
+exchange. A collection of parameters (prime and group generator)
+are included.
+
+The intention is for the communication to happen via copy/pasting in
+public online chats or instant messaging. After the handshake, a
+simple line protocol (XOR of a padded message with the shared secret)
+allows for the encryption of a short message.
+
+Prolonged use is almost certainly vulnerable to cryptanalysis; this is
+best used for a one-off message (e.g. for commmunicating a private IP
+address).
