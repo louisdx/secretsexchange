@@ -1,6 +1,6 @@
 var in_a, in_b, in_ga, in_gb, in_p, in_g;
 var in_put, out_put, out_gab;
-var but_a, but_b, but_ra, but_rb, but_enc, but_dec;
+var but_a, but_b, but_ra, but_rb, but_rnda, but_rndb, but_enc, but_dec;
 
 var TheP = str2bigInt("124325339146889384540494091085456630009856882741872806181731279018491820800119460022367403769795008250021191767583423221479185609066059226301250167164084041279837566626881119772675984258163062926954046545485368458404445166682380071370274810671501916789361956272226105723317679562001235501455748016154805420913", 10, 1024, 64);
 var TheG = str2bigInt("115740200527109164239523414760926155534485715860090261532154107313946218459149402375178179458041461723723231563839316251515439564315555249353831328479173170684416728715378198172203100328308536292821245983596065287318698169565702979765910089654821728828592422299160041156491980943427556153020487552135890973413", 10, 1024, 64);
@@ -21,12 +21,14 @@ function Init() {
         out_put = document.getElementById("out_put");
         out_gab = document.getElementById("out_gab");
 
-        but_a   = document.getElementById("go_a");
-        but_b   = document.getElementById("go_b");
-        but_ra  = document.getElementById("but_ra");
-        but_rb  = document.getElementById("but_rb");
-        but_enc = document.getElementById("go_enc");
-        but_dec = document.getElementById("go_dec");
+        but_a    = document.getElementById("go_a");
+        but_b    = document.getElementById("go_b");
+        but_ra   = document.getElementById("but_ra");
+        but_rb   = document.getElementById("but_rb");
+        but_rnda = document.getElementById("but_rnda");
+        but_rndb = document.getElementById("but_rndb");
+        but_enc  = document.getElementById("go_enc");
+        but_dec  = document.getElementById("go_dec");
     }
 
     if (but_a) {
@@ -40,6 +42,13 @@ function Init() {
     }
     if (but_rb) {
         but_rb.addEventListener("click", fillBobInput, false);
+    }
+
+    if (but_rnda && in_a) {
+        but_rnda.addEventListener("click", function(){ randomBigNum(in_a); }, false);
+    }
+    if (but_rndb && in_b) {
+        but_rndb.addEventListener("click", function(){ randomBigNum(in_b); }, false);
     }
 
     if (but_enc) {
@@ -67,6 +76,11 @@ function fillAliceInput(ev) {
 
 function fillBobInput(ev) {
     in_ga.value = in_put.value;
+}
+
+function randomBigNum(elem)
+{
+    elem.value = bigInt2str(randBigInt(512, 1), 10);
 }
 
 function compute(gx, px, nx) {
