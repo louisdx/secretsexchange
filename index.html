@@ -1,39 +1,50 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html>
-  <head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Secret Exchange</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" type="text/css" href="default.css">
     <script type="text/javascript" src="BigInt.js"></script>
-    <script type="text/javascript" src="sexchange.js"></script>
+    <script type="text/javascript" src="sexchange-core.js"></script>
+    <script type="text/javascript" src="sexchange-ui.js"></script>
   </head>
 
   <body>
 
-    <h1>Secret Exchange</h1>
+    <h1>Secrets Exchange</h1>
 
-    <h2>Handshake</h2>
+    <p>You are one of Alice and Bob, and you want to exchange secret
+    messages with the other partner. Alice initiates the exchange with
+    a handshake; Bob responds to the handshake. Once both sides have
+    exchanged a token (which can safely be transmitted in public),
+    they have a shared secret which nobody else knows and which they
+    can use to exchange encrypted messages.</p>
 
-    <form action="" style="float: left; margin: 0 2em 0 0">
+    <p>You may also like to visit the <a href="https://github.com/louisdx/secretsexchange">GitHub project page</a>
+    where you can obtain an offline application that does the same thing as this website, or visit the
+    <a href="index-OLD.html">original version</a> of this page.</p>
+
+    <form action="" style="float: left; margin-right: 1em;">
       <fieldset>
-      <legend>The public data</legend>
+      <legend>Alice (initiates the handshake)</legend>
       <table>
         <tbody>
           <tr>
-            <th style="width: 2em;"><var>g</var></th>
-            <td><input type="text" name="in_g" id="in_g" readonly="readonly"></td>
+            <th>Step 1:<br>Enter a number</th>
+            <td><input type="text" name="in_a" id="in_a"></td>
+            <td><input type="button" name="but_rnda" id="but_rnda" value="random"></td>
+            <td><input type="button" id="go_a" value="done"></td>
           </tr>
           <tr>
-            <th><var>p</var></th>
-            <td><input type="text" name="in_p" id="in_p" readonly="readonly"></td>
-          </tr>
-          <tr>
-            <th><var>g</var><sup><var>a</var></sup></th>
+            <th>Step 2:<br>Send this to Bob</th>
             <td><input type="text" name="in_ga" id="in_ga"></td>
           </tr>
           <tr>
-            <th><var>g</var><sup><var>b</var></sup></th>
-            <td><input type="text" name="in_gb" id="in_gb"></td>
+            <th>Step 3:<br>Paste Bob&rsquo;s number</th>
+            <td><input name="in_put_a" id="in_put_a" type="text"></td>
+            <td><input type="button" id="but_ra" value="done"></td>
+          </tr>
+          <tr>
+            <th>Step 4: Communicate</th>
+            <td><a href="#encrypt">start encrypting/decrypting</a></td>
           </tr>
         </tbody>
       </table>
@@ -42,99 +53,78 @@
 
     <form action="">
       <fieldset>
-      <legend>Alice's private data</legend>
+      <legend>Bob (responds to the handshake)</legend>
       <table>
         <tbody>
           <tr>
-            <th style="width: 8em;"><var>a</var> (secret)</th>
-            <td><input type="text" name="in_a" id="in_a"></td>
-            <td><input type="button" name="but_rnda" id="but_rnda" value="random"></td>
+            <th>Step 1:<br>Paste Alice&rsquo;s number</th>
+            <td><input name="in_put_b" id="in_put_b" type="text"></td>
+            <td><input type="button" id="but_rb" value="done"></td>
           </tr>
-        </tbody>
-      </table>
-      </fieldset>
-    </form>
-
-    <form action="">
-      <fieldset>
-      <legend>Bob's private data</legend>
-      <table>
-        <tbody>
           <tr>
-            <th style="width: 8em;"><var>b</var> (secret)</th>
+            <th>Step 2:<br>Enter a number</th>
             <td><input type="text" name="in_b" id="in_b"></td>
             <td><input type="button" name="but_rndb" id="but_rndb" value="random"></td>
+            <td><input type="button" id="go_b" value="done"></td>
+          </tr>
+          <tr>
+            <th>Step 3:<br>Send this to Alice</th>
+            <td><input type="text" name="in_gb" id="in_gb"></td>
+          </tr>
+          <tr>
+            <th>Step 4: Communicate</th>
+            <td><a href="#encrypt">start encrypting/decrypting</a></td>
           </tr>
         </tbody>
       </table>
       </fieldset>
     </form>
 
-    <form action="">
+    <form action="" id="encrypt">
       <fieldset>
-      <legend>The shared secret</legend>
+      <legend>Encrypt/decrypt messages:</legend>
       <table>
         <tbody>
           <tr>
-            <th style="width: 8em;"><var>g</var><sup><var>ab</var></sup> (secret)</th>
-            <td><input type="text" name="out_gab" id="out_gab"></td>
-          </tr>
-        </tbody>
-      </table>
-      </fieldset>
-    </form>
-
-    <p><strong>If you are Alice:</strong> Enter a secret <label for="in_a"><var>a</var></label> and
-    then transmit <var>g</var><sup><var>a</var></sup> to Bob.
-    <input type="button" id="go_a" value="1. I am Alice; initiate."></p>
-
-    <p><strong>If you are Bob:</strong> Wait for the data from Alice, read it, and enter
-    a secret <label for="in_b"><var>b</var></label>. Then send
-    <label for="in_gb"><var>g</var><sup><var>b</var></sup></label> to Bob and compute the shared secret.
-    <input type="button" id="go_b" value="4. I am Bob; make shared secret."></p>
-
-    <p><strong>Alice again:</strong> Read Bob's token
-    <label for="in_gb"><var>g</var><sup><var>b</var></sup></label> below and compute the shared secret.</p>
-
-    <form action="">
-      <fieldset>
-      <legend>Input/Output</legend>
-      <table>
-        <tbody>
-          <tr>
-            <th style="width: 5em;">Input</th>
-            <td style="width: 15em;"><input name="in_put" id="in_put" type="text"></td>
-            <td><input type="button" id="but_rb" value="3. Read as Bob">
-                <input type="button" id="but_ra" value="6. Read as Alice and compute shared secret"></td>
-          </tr>
-          <tr>
-            <th>Output</th>
-            <td><input name="out_put" id="out_put" type="text"></td>
-            <td>2. Send to Bob. 5. Send to Alice.</td>
-          </tr>
-        </tbody>
-      </table>
-      </fieldset>
-    </form>
-
-    <h2>Talk</h2>
-
-    <form action="">
-      <table>
-        <tbody>
-          <tr>
-            <th>Plaintext (secret)</th>
+            <th>Send message</th>
             <td><input name="in_pt" id="in_pt" size="50" type="text"></td>
             <td><input type="button" id="go_enc" name="go_enc" value="Encrypt"></td>
           </tr>
           <tr>
-            <th>Encrypted (public)</th>
+            <th>Read message</th>
             <td><input name="in_et" id="in_et" size="50" type="text"></td>
             <td><input type="button" id="go_dec" name="go_dec" value="Decrypt"></td>
           </tr>
         </tbody>
       </table>
+      </fieldset>
+    </form>
+
+    <form action="">
+      <fieldset>
+      <legend>Internal data (for information only)</legend>
+      <table>
+        <tbody>
+          <tr>
+            <th><var>p</var></th>
+            <td><input type="text" name="in_p" id="in_p" readonly="readonly"></td>
+            <td>a (large) prime</td>
+          </tr>
+          <tr>
+            <th><var>g</var></th>
+            <td><input type="text" name="in_g" id="in_g" readonly="readonly"></td>
+            <td>a subgroup generator in (Z/<var>p</var>Z)<sup>&times;</sup></td>
+          </tr>
+          <tr>
+            <th><var>g</var><sup><var>ab</var></sup></var></th>
+            <td><input type="text" name="in_g" id="out_gab" readonly="readonly"></td>
+            <td>the shared secret</td>
+          </tr>
+        </tbody>
+      </table>
+      </fieldset>
     </form>
 
   </body>
+
 </html>

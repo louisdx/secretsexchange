@@ -1,9 +1,6 @@
 var in_a, in_b, in_ga, in_gb, in_p, in_g;
-var in_put, out_put, out_gab;
+var in_put_a, input_b, out_put, out_gab;
 var but_a, but_b, but_ra, but_rb, but_rnda, but_rndb, but_enc, but_dec;
-
-var TheP = str2bigInt("124325339146889384540494091085456630009856882741872806181731279018491820800119460022367403769795008250021191767583423221479185609066059226301250167164084041279837566626881119772675984258163062926954046545485368458404445166682380071370274810671501916789361956272226105723317679562001235501455748016154805420913", 10, 1024, 64);
-var TheG = str2bigInt("115740200527109164239523414760926155534485715860090261532154107313946218459149402375178179458041461723723231563839316251515439564315555249353831328479173170684416728715378198172203100328308536292821245983596065287318698169565702979765910089654821728828592422299160041156491980943427556153020487552135890973413", 10, 1024, 64);
 
 var limit = int2bigInt(2, 8, 1);
 var tfs   = int2bigInt(256, 8, 1);
@@ -17,7 +14,8 @@ function Init() {
         in_g    = document.getElementById("in_g");
         in_p    = document.getElementById("in_p");
 
-        in_put  = document.getElementById("in_put");
+        in_put_a  = document.getElementById("in_put_a");
+        in_put_b  = document.getElementById("in_put_b");
         out_put = document.getElementById("out_put");
         out_gab = document.getElementById("out_gab");
 
@@ -65,31 +63,13 @@ function Init() {
 
 window.addEventListener("load", Init, false);
 
-function ExpMod(Base, Expo, Modu) {
-    return powMod(Base, Expo, Modu);
-}
-
 function fillAliceInput(ev) {
-    in_gb.value = in_put.value;
+    in_gb.value = in_put_a.value;
     out_gab.value = bigInt2str(compute(in_gb.value, in_p.value, in_a.value), 10);
 }
 
 function fillBobInput(ev) {
-    in_ga.value = in_put.value;
-}
-
-function randomBigNum(elem)
-{
-    elem.value = bigInt2str(randBigInt(512, 1), 10);
-}
-
-function compute(gx, px, nx) {
-    var g = str2bigInt(gx, 10, 1024, 64);
-    var p = str2bigInt(px, 10, 1024, 64);
-    var n = str2bigInt(nx, 10, 1024, 64);
-
-    //return res = (g.pow(n)).mod(p);
-    return ExpMod(g, n, p);
+    in_ga.value = in_put_b.value;
 }
 
 function runAlice(ev) {
