@@ -89,18 +89,28 @@
         <tbody>
           <tr>
             <th>Send message</th>
-            <td><input id="in_pt" type="text" name="in_pt" size="99" maxlength="99"></td>
+            <td><input id="in_pt" type="text" name="in_pt" size="99"></td>
             <td><input type="button" id="go_enc" name="go_enc" value="Encrypt"></td>
           </tr>
           <tr>
             <th>Read message</th>
-            <td><input id="in_et" type="text" name="in_et" size="99" maxlength="99"></td>
+            <td><input id="in_et" type="text" name="in_et" size="99"></td>
             <td><input type="button" id="go_dec" name="go_dec" value="Decrypt"></td>
           </tr>
         </tbody>
       </table>
       </fieldset>
     </form>
+
+    <h2>Some background information</h2>
+
+    <p>Your own number (Alice&rsquo;s Step 1 and Bob&rsquo;s Step 2) is your own, private
+    secret that <em>nobody</em> else knows or must know. The shared secret (displayed below)
+    is known only to you and your partner, but is and must never be transmitted.</p>
+    <p>If you make a copy of the shared secret, or of your private secret and the other party&rsquo;s
+    public handshake, you can later resume decrypting and encrypting messages from the same session.
+    (To encrypt/decrypt messages with a user-defined shared secret, please use the <a href="index-OLD.html">old
+    website</a>.)</p>
 
     <form action="">
       <fieldset>
