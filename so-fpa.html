@@ -403,16 +403,18 @@ int main()
     The crucial feature of type erasure is that there is only one single public
     type (namely <code>TEClass</code>), but it can be constructed with an arbitrarily
     typed value. The type of the constructor argument is &ldquo;forgotten&rdquo; by the
-    class.</p>
+    class (although it can be checked via <code>impl-&gt;get_type()</code>).</p>
 
     <div class="listing">#include &lt;memory&gt;
 #include &lt;type_traits&gt;
+#include &lt;typeinfo&gt;
 
 class TEClass
 {
     struct TEImplBase
     {
         virtual ~TEImplBase() { }
+        virtual std::type_info const &amp; get_type() const = 0;
         virtual void do_something() = 0;
     };
 
@@ -423,7 +425,7 @@ class TEClass
 public:
 
     template &lt;typename T&gt;
-    TEClass(T && x)
+    TEClass(T &amp;&amp; x)
     : impl(new TEImpl&lt;typename std::decay&lt;T&gt;::type&gt;(std::forward&lt;T&gt;(x)))
     {
     }
@@ -444,6 +446,7 @@ private:
     struct TEImpl : TEImplBase
     {
         TEImpl(T) { }
+        std::type_info const &amp; get_type() const { return typeid(T); }
         void do_something() { }
     };
 };</div>
