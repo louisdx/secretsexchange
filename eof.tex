@@ -1,0 +1,198 @@
+\documentclass[landscape,a4paper]{article}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fontspec,xunicode,xltxtra}
+\usepackage[margin=3cm,top=1cm,bottom=1cm]{geometry}
+\usepackage[nodisplayskipstretch]{setspace}
+
+\setmainfont[Mapping=tex-text, Numbers={OldStyle}, Scale=2]{Cambria}
+\setmonofont[Scale=MatchLowercase]{Source Code Pro}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5\baselineskip}
+\setstretch{2}
+
+\newenvironment{vcframe}{%
+\begin{titlepage}
+\vspace*{\fill}}{%
+\vspace*{\parskip}%
+\vspace*{\fill}
+\end{titlepage}}
+
+\begin{document}
+
+\begin{vcframe}
+\center{\LARGE{C and C++ Programming:}\\[2em]\Huge{``eof'' is never correct}}
+\end{vcframe}
+
+\begin{vcframe}\center
+I/O is dealing with the \emph{unknown}.
+
+\emph{Anything} can happen.
+
+You cannot know in advance.
+\end{vcframe}
+
+\begin{vcframe}\center
+\setlength{\parskip}{1\baselineskip}
+Do not bother checking whether something \emph{may} succeed.
+
+This information is useless.
+
+\begin{minipage}{\textwidth}
+\setlength{\parskip}{1\baselineskip}
+\texttt{if (feof(fp)) \{ /* ... */ \}   // useless (FILE * fp)}
+
+\texttt{if (in.eof()) \{ /* ... */ \}   // useless (std::istream \& in)}
+\end{minipage}
+
+You \emph{cannot} predict whether the next input operation will succeed.
+
+Don't even try!
+\end{vcframe}
+
+\begin{vcframe}\center
+\large Instead: \emph{Just do it.}
+\end{vcframe}
+
+\begin{vcframe}
+\setlength{\parskip}{1\baselineskip}
+And \emph{after you have tried, check if you succeeded.}
+
+Assume we have: \texttt{FILE * fp = fopen("data.txt", "rb");}
+
+First attempt:
+{\small\begin{verbatim}
+unsigned char buf[50];  // want to read 50 bytes
+if (fread(buf, sizeof buf, 1, fp) == sizeof buf) { /* success */ }
+\end{verbatim}}
+Correct, but may fail: \texttt{fread} may not read the requested number of bytes at once. Better in a \emph{loop}:
+{\small\begin{verbatim}
+for (size_t n, total = sizeof buf;
+     (n = fread(buf, total, 1, fp)) > 0;
+      total -= n) { }
+
+if (total > 0) { /* error, did not read the desired amount */ }
+\end{verbatim}}
+Note the pattern: Read first, then see what you got.
+\end{vcframe}
+
+\begin{vcframe}
+\setlength{\parskip}{1\baselineskip}
+The same works for formatted extraction:
+{\small\begin{verbatim}
+if (fscanf(fp, "%d %d %d", &a, &b, &c) != 3) {
+    /* error */
+} else {
+    /* OK to use a, b, c */
+}
+\end{verbatim}}
+Again the pattern: Attempt the extraction first, then check.
+
+Assume that it is \emph{undefined behaviour} to access the destination
+variables unless the extraction succeeded!
+
+(This may not actually be the case, but it's a good way to think.)
+\end{vcframe}
+
+\begin{vcframe}
+\setlength{\parskip}{1\baselineskip}
+Output is similar -- it may not succeed. Make sure to check the result:
+{\small\begin{verbatim}
+unsigned char buf[50];  // to be written, populated
+
+for (size_t n, total = sizeof buf;
+     (n = fwrite(buf, total, 1, fp)) > 0;
+      total -= n) { }
+
+if (total > 0) { /* error, did not write all the data */ }
+\end{verbatim}}
+\end{vcframe}
+
+\begin{vcframe}
+\setlength{\parskip}{1\baselineskip}
+In C++ with iostreams, stream objects tell you if they are ``good'':
+{\small\begin{verbatim}
+std::ifstream infile("data.txt");
+
+if (infile) {
+    /* infile is good */
+} else {
+    /* not good, e.g. could not open the file */
+}
+\end{verbatim}}
+No operations succeed on a stream that is bad (i.e.\ not good).
+\end{vcframe}
+
+\begin{vcframe}
+\setlength{\parskip}{1\baselineskip}
+Most iostream operations return the stream itself:
+{\small\begin{verbatim}
+infile >> n;                   // returns infile
+std::getline(infile, str);     // returns infile
+infile.read(buf, sizeof buf);  // returns infile
+\end{verbatim}}
+
+\emph{Use this to your advantage!}
+{\small\begin{verbatim}
+if (infile >> n)               { /* OK to use n */ }
+if (std::getline(infile, str)) { /* OK to use str */ }
+
+if (infile.read(buf, sizeof buf) &&
+    infile.gcount() == sizeof buf) { /* OK */ }
+\end{verbatim}}
+The use of \texttt{gcount()} is as before: reading may result in partial data, and
+we must also check if we got the desired amount. Again, best in a loop.
+\end{vcframe}
+
+\begin{vcframe}\center
+I thought you would never ask.
+\end{vcframe}
+
+\begin{vcframe}
+\setlength{\parskip}{1\baselineskip}
+There are \emph{some} useful operations that return an \emph{integer} of value \texttt{EOF}:
+\begin{itemize}
+\item \texttt{fgetc(fp);}
+\item \texttt{infile.get();}
+\end{itemize}
+These attempt to read a \emph{single character} from the stream, and return \texttt{EOF} when there is nothing more to read.
+
+\textbf{Warning:} \texttt{EOF} is never a valid character! You must not convert the result of the extraction to \texttt{char} (or whatever suitable character type) until \emph{after} you have compared it against the integer \texttt{EOF}.
+{\small\begin{verbatim}
+int n = fgetc(fp);             // must be "int"!
+if (n != EOF) { char c = n; }  // convert only when good
+\end{verbatim}}
+\end{vcframe}
+
+\begin{vcframe}\center
+Let's be clear: We were just talking about an integral constant, and \emph{not} a function.
+
+It is the \emph{functions} with ``eof'' in their name that are never correct.
+
+The integral constant has its place and its uses.
+\end{vcframe}
+
+\begin{vcframe}
+\setlength{\parskip}{1\baselineskip}
+Grand finale: Loop over the lines in a file, and parse those lines which contain precisely three integers and nothing else.
+{\small\begin{verbatim}
+for (std::string line; std::getline(infile, line); ) {
+    std::istringstream iss(line);
+    int a, b, c;
+    if (iss >> a >> b >> c >> std::ws && iss.get() == EOF) {
+        consume(a, b, c);
+    } else {
+        // failed to parse line
+        // must NOT attempt to access a, b, c
+    }
+}
+\end{verbatim}}
+Notes:\vspace{-1em}
+\begin{itemize}
+\item \texttt{iss >> a >> b >> c >> std::ws} parses three integers and gobbles up final whitespace; it is ``good'' if the extraction succeeded.
+\item Since we expect to have consumed the entire line, \texttt{iss.get()} should now result in \texttt{EOF}.
+\end{itemize}
+\end{vcframe}
+
+\end{document}
