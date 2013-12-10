@@ -153,8 +153,8 @@ I thought you would never ask.
 \setlength{\parskip}{1\baselineskip}
 There are \emph{some} useful operations that return an \emph{integer} of value \texttt{EOF}:
 \begin{itemize}
-\item \texttt{fgetc(fp);}
-\item \texttt{infile.get();}
+\item \texttt{fgetc(fp)}
+\item \texttt{infile.get()}
 \end{itemize}
 These attempt to read a \emph{single character} from the stream, and return \texttt{EOF} when there is nothing more to read.
 
@@ -193,6 +193,10 @@ Notes:\vspace{-1em}
 \item \texttt{iss >> a >> b >> c >> std::ws} parses three integers and gobbles up final whitespace; it is ``good'' if the extraction succeeded.
 \item Since we expect to have consumed the entire line, \texttt{iss.get()} should now result in \texttt{EOF}.
 \end{itemize}
+\end{vcframe}
+
+\begin{vcframe}
+\centerline{\Large End of message.}
 \end{vcframe}
 
 \end{document}
